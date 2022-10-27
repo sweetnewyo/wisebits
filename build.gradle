@@ -1,0 +1,35 @@
+plugins {
+    id 'java'
+}
+
+//configurations.implementation {
+//    exclude group: 'org.yaml', module: 'snakeyaml'
+//}
+
+
+group 'org.example'
+version '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+
+ext {
+    springVersion = '2.7.5'
+    springCloudVersion = '3.1.4'
+    lombokVersion = '1.18.24'
+    apacheLangVersion = '3.12.0'
+}
+
+dependencies {
+    implementation "org.springframework.boot:spring-boot-starter-web:$springVersion"
+    testImplementation "org.springframework.boot:spring-boot-starter-test:$springVersion"
+    implementation "org.springframework.cloud:spring-cloud-starter-openfeign:$springCloudVersion"
+    compileOnly "org.projectlombok:lombok:$lombokVersion"
+    annotationProcessor "org.projectlombok:lombok:$lombokVersion"
+    implementation "org.apache.commons:commons-lang3:$apacheLangVersion"
+}
+
+test {
+    useJUnitPlatform()
+}
