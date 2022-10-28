@@ -1,0 +1,147 @@
+Тест кейсы:
+
+1. Успешное создание пользователя
+
+   1.1 Выполнить POST запрос http://3.145.97.83:3333/user/create
+   c случайными данными в FormData, например:
+   {
+   "username": "tonytony",
+   "email": "tony@mail.ru",
+   "password": "123"
+   }
+   1.2 Получить ответ со статус кодом 200 и телом ответа, например:
+   {
+   "success": true,
+   "details": {
+   "username": "tonytony",
+   "email": "tony@mail.ru",
+   "password": "$2a$10$fI8uXd3bOfSqRI2n1EiPy.NjCRpGU.tAYFoHcM4Fr/Jug0kJ0OZcS",
+   "created_at": "2022-10-28 06:56:25",
+   "updated_at": "2022-10-28 06:56:25",
+   "id": 21474836506
+   },
+   "message": "User Successully created"
+   }
+   1.3 Выполнить GET запрос http://3.145.97.83:3333/user/get?id=21474836506
+   1.4 Получить ответ со статус кодом 200 и телом ответа, например:
+   [
+   {
+   "id": 21474836506,
+   "username": "tonytony",
+   "email": "tony@mail.ru",
+   "password": "$2a$10$fI8uXd3bOfSqRI2n1EiPy.NjCRpGU.tAYFoHcM4Fr/Jug0kJ0OZcS",
+   "created_at": "2022-10-28 06:56:25",
+   "updated_at": "2022-10-28 06:56:25"
+   }
+   ]
+   1.5 Ожидаемый результат: данные из шага 1.2 совпадают с 1.4
+
+2. Невозможность создания пользователя с идентичным username и/или email
+
+    2.1 Выполнить POST запрос http://3.145.97.83:3333/user/create с данными из 1.1
+    2.2 Получить ответ со статус кодом 400, и телом ответа:
+        {
+            "success": false,
+            "message": [
+                "This username is taken. Try another."
+            ]
+        }
+    2.3 Изменить username и выполнить POST запрос http://3.145.97.83:3333/user/create
+    2.4 Получить ответ со статус кодом 400, и телом ответа:
+        {
+            "success": false,
+            "message": [
+                "Email already exists"
+            ]
+        }
+
+3. Проверка обязательности полей
+    3.1 Выполнить POST запрос http://3.145.97.83:3333/user/create c случайными данными в FormData без username, например:
+        {
+           "email": "tony@mail.ru",
+           "password": "123"
+        }
+    3.2 Получить ответ со статус кодом 400, и телом ответа:
+        {
+            "success": false,
+            "message": [
+                "A username is required"
+            ]
+        }
+    3.3 Провести аналогичные проверки для полей email, password и получить ответы со статус кодом 400, и телами ответа:
+       {
+           "success": false,
+           "message": [
+               "An Email is required"
+           ]
+       }
+       {
+           "success": false,
+           "message": [
+               "A password for the user"
+           ]
+       }
+
+4. Невозможность отправить дополнительные данные в FormData
+   4.1 Выполнить POST запрос http://3.145.97.83:3333/user/create
+      c случайными данными в FormData, например:
+      {
+      "username": "tonytony",
+      "email": "tony@mail.ru",
+      "password": "123",
+      "birthDate": "21.10.1993"
+      }
+   4.2 Получить ответ со статус кодом 200 и телом ответа, например:
+      {
+      "success": true,
+      "details": {
+      "username": "tonytony",
+      "email": "tony@mail.ru",
+      "password": "$2a$10$fI8uXd3bOfSqRI2n1EiPy.NjCRpGU.tAYFoHcM4Fr/Jug0kJ0OZcS",
+      "created_at": "2022-10-28 06:56:25",
+      "updated_at": "2022-10-28 06:56:25",
+      "id": 21474836506
+      },
+      "message": "User Successully created"
+      }
+   4.3 Поле birthDate должно игнорироваться
+
+Так как нет требований на поля то опишу проверки для полей в общем:
+
+5. Чек лист на проверки валидности полей в FormData
+   5.1 Проверить поле username согласно техникам тест дизайна:
+       5.1.1 Граничные значения длины поля username
+       5.1.2 Эквивалентные классы для поля username: буквы, числа, спецсимволы, кирилица, пробелы
+       5.1.3 Пустая строка в username
+   5.2 Проверить поле email согласно техникам тест дизайна:
+       5.2.1 Аналогичные проверки из 5.1.1, 5.1.2, 5.1.3
+       5.2.1 Проверить, что email как минимум соотвествует regexp ^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$
+   5.3 Так как отсутствуют требования на password, то опишу минимальные проверки:
+       5.3.1 Граничные значения длины поля username
+       5.3.2 Эквивалентные классы для поля username: буквы, числа, спецсимволы, кирилица, пробелы
+       5.3.3 Пустая строка в username
+
+6. Получение списка пользователей
+   6.1 Выполнить POST запрос http://3.145.97.83:3333/user/create
+      c случайными данными в FormData, например:
+      {
+      "username": "tonytony",
+      "email": "tony@mail.ru",
+      "password": "123"
+      }
+   6.2 Получить ответ со статус кодом 200 и телом ответа, например:
+      {
+      "success": true,
+      "details": {
+      "username": "tonytony",
+      "email": "tony@mail.ru",
+      "password": "$2a$10$fI8uXd3bOfSqRI2n1EiPy.NjCRpGU.tAYFoHcM4Fr/Jug0kJ0OZcS",
+      "created_at": "2022-10-28 06:56:25",
+      "updated_at": "2022-10-28 06:56:25",
+      "id": 21474836506
+      },
+      "message": "User Successully created"
+      }
+   6.3 Выполнить GET запрос http://3.145.97.83:3333/user/get
+   6.4 Получить ответ со статус кодом 200 и списком созданных пользователей
+   6.5 Ожидаемый результат: созданный пользователь есть в списке и данные совпадают из шагов 6.1 и 6.2

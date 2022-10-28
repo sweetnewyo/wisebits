@@ -19,4 +19,9 @@ public class UserFactory {
         user.password = password;
         return user;
     }
+
+    public String generateRandomUsername() {
+        int r = new Random().nextInt(1, 999);
+        return RandomStringUtils.randomAlphabetic(r);
+    }
 }
